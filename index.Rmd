@@ -1,0 +1,343 @@
+---
+title: "Análisis Exploratorio de Datos con R"
+author: "Gaston Nina Sossa"
+output:
+  pdf_document: 
+    toc: true          # Tabla de contenido en PDF
+    toc_depth: 2
+  html_document: 
+    toc: true          # Tabla de contenido en HTML
+    toc_depth: 2       # Nivel de profundidad
+    toc_float: true    # TOC flotante en HTML
+---
+
+**El Dataset IRIS**
+
+El dataset se compone de 150 observaciones de flores de la planta iris.
+
+## Cargando el Dataset
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data(iris)
+names(iris)
+```
+
+Acceder a las variables
+```{r}
+attach(iris)
+```
+
+```{r}
+head(iris)
+```
+## Frecuencia y Moda
+```{r}
+table(iris$Species)
+```
+
+```{r}
+vec <- c(1,1,1,0,0,3,3,3,3,2)
+```
+
+```{r}
+table(vec)
+```
+
+```{r}
+table(vec)/length(vec)
+```
+
+```{r}
+my_mode <- function(var){ 
+  frec.var <- table(var)
+  valor <- which(frec.var == max(frec.var))
+  names(valor)
+}
+```
+
+```{r}
+my_mode(vec)
+```
+
+```{r}
+my_mode(iris$Sepal.Length)
+```
+
+## Medidas de Tendencia Central
+
+```{r}
+vec <- rnorm(10,20,10)
+vec
+```
+
+```{r}
+mean(vec)
+```
+
+```{r}
+vec.ruid <- c(vec, rnorm(1,300,100))
+vec.ruid
+```
+
+```{r}
+mean(vec.ruid)
+```
+
+```{r}
+mean(vec, trim = 0.1)
+```
+
+```{r}
+mean(vec.ruid, trim = 0.1)
+```
+
+```{r}
+median(vec)
+```
+
+```{r}
+median(vec.ruid)
+```
+
+# Comparación entre la moda, la mediana y la media
+
+- **mean (medio)** es como el centro de masa de mi distribución
+- **median (mediana)** divide en dos partes iguales
+- **mode (moda)** es el valor más frecuente
+
+## Percentiles
+
+```{r}
+quantile(iris$Sepal.Length, seq(0,1,0.01))
+```
+
+```{r}
+quantile(iris$Sepal.Length, seq(0,1,0.25))
+```
+
+## Resumen del Data Frame
+
+```{r}
+summary(iris)
+```
+
+## Análisis por especie
+
+• Usando el comando tapply analice la media, la mediana y los
+cuartiles para las tres especies de Iris para las cuatro variables.
+
+```{r}
+tapply(iris$Petal.Length, iris$Species, summary)
+```
+
+```{r}
+tapply(iris$Petal.Width, iris$Species, summary)
+```
+
+```{r}
+tapply(iris$Sepal.Length, iris$Species, summary)
+```
+
+```{r}
+tapply(iris$Sepal.Width, iris$Species, summary)
+```
+
+## Medidas de Dispersión
+
+```{r}
+max(iris$Sepal.Length) - min(iris$Sepal.Length)
+```
+
+```{r}
+var(iris$Sepal.Length)
+```
+
+```{r}
+sd(iris$Sepal.Length)
+```
+
+```{r}
+aad <- function(x, fun = median){
+  mean(abs(x - fun(x)))
+}
+```
+
+```{r}
+aad(iris$Sepal.Length)
+```
+
+```{r}
+aad(iris$Sepal.Length, mean)
+```
+
+```{r}
+mad(iris$Sepal.Length)
+```
+
+```{r}
+IQR(iris$Sepal.Length)
+```
+
+## Estadísticas Multivariadas
+
+```{r}
+cov(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+```{r}
+cov(iris[,1:4])
+```
+
+```{r}
+cor(iris[,1:4])
+```
+
+## Tablas de Contingencia
+
+```{r}
+table(iris$Species, iris$Sepal.Length > 5)
+```
+
+## Visualización
+
+```{r}
+plot(rnorm(15, 10, 5), col="red", type="l")
+lines(rnorm(15, 10, 5), col="blue", type="p", pch=1)
+lines(rnorm(15, 10, 5), col="green", type="b", pch=2)
+title(main="Mi gráfico")
+legend('topright', c("líneas", "puntos", "ambos"), lty=c(1, 0, 1), col=c("red", "blue", "green"), bty='n', cex=0.75)
+```
+
+
+```{r}
+plot(iris$Sepal.Length)
+```
+
+```{r}
+hist(iris$Sepal.Length)
+```
+
+```{r}
+hist(iris$Sepal.Length, nclass = 100)
+```
+
+### ggplot2
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length)) + geom_histogram(bins = 10, color = 'black', fill = 'white')
+```
+
+## Densidad
+
+```{r}
+plot(density(iris$Sepal.Length), main='Densidad de Sepal.Length')
+```
+
+## Pie Chart
+
+```{r}
+pie(table(iris$Species))
+```
+
+## Boxplots
+
+```{r}
+boxplot(iris$Sepal.Length, main='Boxplot Sepal.Length')
+```
+
+```{r}
+boxplot(Sepal.Length ~ Species, data=iris, ylab='Sepal.Length')
+```
+
+```{r}
+boxplot(iris[,1:4], main='Boxplots Iris')
+```
+
+```{r}
+ggplot(iris, aes(x = Species, y = Sepal.Length, fill = Species)) + geom_boxplot()
+```
+
+## Diagramas de Disperción
+
+```{r}
+# El ancho del sépalo vs el largo del sépalo
+plot(Sepal.Width ~ Sepal.Length, col=iris$Species)
+```
+
+```{r}
+# Equivalente
+plot(iris$Sepal.Length, iris$Sepal.Width, col=iris$Species, pch=as.numeric(iris$Species))
+```
+
+
+Despues de realizar correcciones
+```{r}
+# Creamos el gráfico
+plot(iris$Sepal.Length, iris$Sepal.Width, 
+     col = as.numeric(iris$Species), 
+     pch = as.numeric(iris$Species),
+     xlab = "Sepal Length", 
+     ylab = "Sepal Width", 
+     main = "Sepal Width vs Sepal Length")
+
+# Agregamos la leyenda
+legend("topright", 
+       legend = levels(iris$Species), 
+       col = 1:3, 
+       pch = 1:3, 
+       bty = "n", 
+       cex = 0.75)
+
+```
+Mismo grafico pero con ggplot
+
+```{r}
+ggplot(iris, aes(x=Sepal.Length, y=Sepal.Width, color=Species)) + geom_point(size=3, shape=4)
+```
+Ahora grafiquemos todos los pares de las 4 variables del dataset iris usando un color y un carácter distinto para cada especie:
+```{r}
+pairs(iris[,1:4], pch=as.numeric(iris$Species), col=iris$Species)
+```
+Dispercion en 3d
+```{r}
+install.packages("scatterplot3d",dependencies=T)
+library(scatterplot3d)
+scatterplot3d(iris$Petal.Width, iris$Sepal.Length,
+iris$Sepal.Width, color=as.numeric(iris$Species),
+pch=as.numeric(iris$Species))
+```
+
+## Gráficos de Coordenadas Paralelas
+
+```{r}
+library(MASS)
+```
+
+```{r}
+parcoord(iris[1:4], col=iris$Species, var.label=TRUE)
+```
+## Gráficos de Estrellas
+
+```{r}
+iris_sample1<-iris[sample(1:dim(iris)[1],size=6,replace=F),]
+rownames(iris_sample1)<-
+paste(as.character(iris_sample1$Species),1:6) 
+stars(iris_sample1[1:4])
+```
+## Caras de Chernoff
+
+```{r}
+library("aplpack")
+iris_sample<-iris[sample(1:dim(iris)[1],size=16,replace=F),]
+faces(iris_sample[1:4],face.type=1,labels=iris_sample$Species)
+```
+
+
