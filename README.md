@@ -15,6 +15,14 @@ El análisis incluye:
 - Comparaciones entre variables
 - Interpretaciones de hallazgos clave
 
+
+## 📊 Visualización del Informe
+
+Puedes ver el informe completo en formato HTML aquí:
+
+👉 [Ver informe en línea](https://gastonnina.github.io/miadas_M04_OP01/)
+
+
 ## ▶️ Cómo usar
 
 1. Clona el repositorio:
